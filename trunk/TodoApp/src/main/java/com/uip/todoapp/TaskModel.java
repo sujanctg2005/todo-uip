@@ -5,6 +5,8 @@
 package com.uip.todoapp;
 
 import com.uip.todoapp.domain.Task;
+import com.uip.todoapp.utility.Utility;
+
 import java.util.Vector;
 import javax.swing.table.AbstractTableModel;
 import org.jdesktop.application.ResourceMap;
@@ -16,7 +18,7 @@ import org.jdesktop.application.ResourceMap;
 public class TaskModel extends AbstractTableModel {
 
     private String[] columnNames;
-    protected Vector dataVector;
+    Vector<Task> taskList = new Vector<Task>();
     ResourceMap resourceMap;
 
     public TaskModel() {
@@ -25,21 +27,17 @@ public class TaskModel extends AbstractTableModel {
                     resourceMap.getString("taskListTable.date"),
                     resourceMap.getString("taskListTable.priority"),
                     resourceMap.getString("taskListTable.tag"),
-                    resourceMap.getString("taskListTable.progress"), "."};
+                    resourceMap.getString("taskListTable.progress")};
 
-        dataVector= new Vector();
-    }
-   public Vector getDataVector() {
-        return dataVector;
+
     }
 
-   
     public int getColumnCount() {
         return columnNames.length;
     }
 
     public int getRowCount() {
-        return dataVector.size();
+        return taskList.size();
     }
 
     public String getColumnName(int col) {
@@ -47,8 +45,8 @@ public class TaskModel extends AbstractTableModel {
     }
 
     public Object getValueAt(int row, int column) {
-        Vector rowVector = (Vector) dataVector.elementAt(row);
-        return rowVector.elementAt(column);
+        Task t = taskList.elementAt(row);
+        return t;
     }
 
     /*
@@ -78,36 +76,64 @@ public class TaskModel extends AbstractTableModel {
     }
 
     /*
-     * Don't need to implement this method unless your table's
-     * data can change.
+     * update data in specific cell
+     * @param value to be set in cell
+     * @param row ,cell row number
+     * @parma column ,cell column number
      */
     public void setValueAt(Object aValue, int row, int column) {
 
-        Vector rowVector = (Vector) dataVector.elementAt(row);
-        rowVector.setElementAt(aValue, column);
+        
+
+        Task t = taskList.elementAt(row);
+        if (column == 0) {
+            t.setTaskName(aValue.toString());
+        }else if (column == 1) {
+            t.setDueDate(Utility.parseDate(aValue.toString()));
+        }else if (column == 2) {
+            t.setPriority(aValue.toString());
+        }else if (column == 3) {
+            t.setTag(aValue.toString());
+        }else if (column == 4) {
+            t.setProgress(Integer.parseInt(aValue.toString()));
+        }else if (column == 5) {
+            t.setDescription(aValue.toString());
+        }
+
+       
         fireTableCellUpdated(row, column);
     }
 
-    public void insertRow(int row, Vector rowData) {
-        dataVector.insertElementAt(rowData, row);
+/*
+ *  add update task object in data model
+ */
+    public void setValueAt(Task t , int row){
+      
+
+
+//
+       setValueAt(t.getTaskName(), row, 0);
+        setValueAt(Utility.formatDateShort(t.getDueDate()), row, 1);
+        setValueAt(t.getPriority(), row, 2);
+        setValueAt(t.getTag(), row, 3);
+        setValueAt(t.getProgress(), row, 4);
+        setValueAt(t.getDescription(), row, 5);
+        
+
+
+    }
+    /*
+     *  insert new row in data model
+     * and fire table event 
+     */
+    public void insertRow(int row, Task data) {
+        taskList.add( row,data);
         justifyRows(row, row + 1);
         fireTableRowsInserted(row, row);
     }
 
-    public void insertRow(int row, Object[] rowData) {
-        insertRow(row, convertToVector(rowData));
-    }
+    
 
-    protected static Vector convertToVector(Object[] anArray) {
-        if (anArray == null) {
-            return null;
-        }
-        Vector<Object> v = new Vector<Object>(anArray.length);
-        for (Object o : anArray) {
-            v.addElement(o);
-        }
-        return v;
-    }
     //
 // Manipulating rows
 //
@@ -117,18 +143,18 @@ public class TaskModel extends AbstractTableModel {
         // instead of the AbstractTableModel by mistake.
         // Set the number of rows for the case when getRowCount
         // is overridden.
-        dataVector.setSize(getRowCount());
+        taskList.setSize(getRowCount());
 
         for (int i = from; i < to; i++) {
-            if (dataVector.elementAt(i) == null) {
-                dataVector.setElementAt(new Vector(), i);
+            if (taskList.elementAt(i) == null) {
+                taskList.setElementAt(new Task(), i);
             }
-            ((Vector) dataVector.elementAt(i)).setSize(getColumnCount());
+            
         }
     }
 
     public void removeRow(int row) {
-        dataVector.removeElementAt(row);
+        taskList.remove(row);
         fireTableRowsDeleted(row, row);
     }
 }

@@ -43,7 +43,7 @@ public class TaskFrame extends javax.swing.JDialog {
     javax.swing.ActionMap actionMap;
     JTextField txtTaskName;
     JTextField txtDate;
-    Object[] priorityItems = {"Low", "Medium", "High"};
+    static String[] priorityItems = {"Low", "Medium", "High"};
     JComboBox priorityCmb;
     JList tagList;
     JTextArea txtDec;

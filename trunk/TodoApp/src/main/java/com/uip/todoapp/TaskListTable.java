@@ -7,12 +7,14 @@ package com.uip.todoapp;
 import com.uip.todoapp.action.TaskController;
 import com.uip.todoapp.domain.Task;
 import com.uip.todoapp.utility.Utility;
+import java.awt.Color;
 import java.awt.Component;
 import org.jdesktop.application.Action;
 import java.awt.Dimension;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -30,7 +32,7 @@ import org.jdesktop.application.ResourceMap;
  */
 public class TaskListTable {
 
-    private JTable taskListTable;
+    private TaskTable taskListTable;
     private TaskModel taskListTablemodel;
     ResourceMap resourceMap;
     javax.swing.ActionMap actionMap;
@@ -48,16 +50,11 @@ public class TaskListTable {
         actionMap = org.jdesktop.application.Application.getInstance(com.uip.todoapp.TodoApplication.class).getContext().getActionMap(TaskListTable.class, this);
         taskController = TaskController.getInstance();
         taskListTablemodel = new TaskModel();
-        taskListTable = new JTable(taskListTablemodel);
+        taskListTable = new TaskTable(taskListTablemodel);
         taskListTable.setPreferredScrollableViewportSize(new Dimension(500, 70));
         taskListTable.setFillsViewportHeight(true);
-//        TableCellRenderer defaultRenderer;
-//
-//        defaultRenderer = taskListTable.getDefaultRenderer(JProgressBar.class);
-        taskListTable.setDefaultRenderer(JProgressBar.class,
-                new ProgRenderer());
-        taskListTable.getColumn("Progress").setCellRenderer(new ProgRenderer());
-        taskListTable.getColumn(".").setMaxWidth(0);
+
+
         final JPopupMenu contextMenu = new JPopupMenu("Edit");
         contextMenu.add(makeMenuItem("edit"));
         contextMenu.add(makeMenuItem("delete"));
@@ -108,10 +105,8 @@ public class TaskListTable {
 
     public void addTask(Task t) {
         System.out.println("tag" + t.getTag());
-        taskListTablemodel.insertRow(0, new Object[]{t.getTaskName(),
-                    Utility.formatDateShort(t.getDueDate()),
-                    t.getPriority(), t.getTag(),
-                    createBar(t.getProgress(), t.getProgress() + "%"), t.getId()});
+
+        taskListTablemodel.insertRow(0, t);
 
 
     }
@@ -123,49 +118,11 @@ public class TaskListTable {
     public void updateTask(Task t) {
 
         int row = taskListTable.getSelectedRow();
-        taskListTablemodel.setValueAt(t.getTaskName(), row, 0);
-        taskListTablemodel.setValueAt(Utility.formatDateShort(t.getDueDate()), row, 1);
-        taskListTablemodel.setValueAt(t.getPriority(), row, 2);
-        taskListTablemodel.setValueAt(t.getTag(), row, 3);
-        taskListTablemodel.setValueAt(createBar(t.getProgress(), t.getProgress() + "%"), row, 4);
-        taskListTablemodel.setValueAt(t.getId(), row, 5);
+       taskListTablemodel.setValueAt(t, row);
+
     }
-    /*
-     *  this method to create progress bar
-     *  @param percentDone , what Percentage of work finish
-     *  @param text , title for progress bar
-     */
-
-    public JProgressBar createBar(int percentDone, String text) {
-        JProgressBar progressBar = new JProgressBar(0, 100);
-
-        progressBar.setStringPainted(true);
-        progressBar.setValue(percentDone);
-        progressBar.setString(text);
-
-        return progressBar;
-    }
-    /*
-     *  This cell renderer is to render progress bar inside
-     *  JTable
-     */
-
-    class ProgRenderer implements TableCellRenderer {
-
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            return (JProgressBar) value;
-        }
-
-        public JProgressBar createBar(int percentDone, String text) {
-            JProgressBar progressBar = new JProgressBar(0, 100);
-
-            progressBar.setStringPainted(true);
-            progressBar.setValue(percentDone);
-            progressBar.setString(text);
-
-            return progressBar;
-        }
-    }
+   
+ 
     /*
      *   delete task from window
      */
@@ -176,7 +133,7 @@ public class TaskListTable {
         int row[] = taskListTable.getSelectedRows();
         for (int i = 0; i < row.length; i++) {
 
-            taskController.deleteTask(new Task((Integer) taskListTablemodel.getValueAt(row[i], 5)));
+            taskController.deleteTask( (Task)taskListTablemodel.getValueAt(row[i], 0));
             taskListTablemodel.removeRow(row[i]);
 
 
@@ -190,9 +147,8 @@ public class TaskListTable {
     @Action
     public void edit() {
         int row = taskListTable.getSelectedRow();
-        Task t = new Task((Integer) taskListTablemodel.getValueAt(row, 5));
-        t = taskController.getTask(t);
-        System.out.println("Table  " + t.toSting());
+        Task t = (Task) taskListTablemodel.getValueAt(row, 0);
+        
         mainForm.getTaskFrame().showTask(t);
 
         mainForm.showTaskForm(); // show task window

@@ -46,7 +46,7 @@ public class Utility {
             
             return df.parse(dateValue);
         } catch (Exception ex) {
-             System.out.println("data is null");
+            // System.out.println("data is null");
         }
         return null;
     }
@@ -58,7 +58,7 @@ public class Utility {
             return df.format(date);
 
         } catch (Exception ex) {
-           System.out.println("data is null");
+          // System.out.println("data is null");
         }
         return "";
     }

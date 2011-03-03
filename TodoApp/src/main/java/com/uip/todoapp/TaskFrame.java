@@ -47,7 +47,8 @@ public class TaskFrame extends javax.swing.JDialog {
     JComboBox priorityCmb;
     JList tagList;
     JTextArea txtDec;
-    private JSlider progressSlider;
+    
+    private CustomSlider progressSlider;
     TaskController taskController;
     TodoForm mainForm;
     Task selTask = null;
@@ -270,7 +271,7 @@ public class TaskFrame extends javax.swing.JDialog {
 
         JPanel p6 = new JPanel();
         p6.setLayout(new BoxLayout(p6, BoxLayout.Y_AXIS));
-        progressSlider = new JSlider(0, 100, 0);
+        progressSlider = new CustomSlider(0, 100, 0);
         progressSlider.setMajorTickSpacing(10);
         progressSlider.setMinorTickSpacing(2);
         progressSlider.setPaintTicks(true);

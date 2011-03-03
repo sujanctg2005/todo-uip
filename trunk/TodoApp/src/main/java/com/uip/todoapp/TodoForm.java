@@ -13,22 +13,17 @@ import com.uip.todoapp.utility.Language;
 import com.uip.todoapp.utility.Utility;
 import java.awt.*;
 import java.awt.event.*;
-import java.beans.*;
-import java.io.*;
-import java.net.URL;
+
 import java.util.*;
 
-import javax.swing.text.*;
-import javax.swing.undo.*;
-import javax.swing.event.*;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
+
 import org.jdesktop.application.Action;
 import org.jdesktop.application.FrameView;
 import org.jdesktop.application.ResourceManager;

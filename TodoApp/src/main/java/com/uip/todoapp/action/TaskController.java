@@ -8,15 +8,9 @@ import com.uip.todoapp.domain.Tag;
 import com.uip.todoapp.domain.Task;
 import com.uip.todoapp.service.ServiceFactory;
 import com.uip.todoapp.service.ToDoService;
-import com.uip.todoapp.utility.XMLParser;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.util.ArrayList;
+
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.jdom.JDOMException;
+
 
 /**
  *

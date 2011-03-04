@@ -61,7 +61,7 @@ public class TodoForm extends FrameView {
     TagList tagObj = TagList.getInstance();
     TagFrame tagFrame;
     TaskListModel taskListModel;
-    JList taskJlist;   // view task as list
+    public JList taskJlist;   // view task as list
     /**
      * Suffix applied to the key used in resource file
      * lookups for an image.
@@ -162,9 +162,9 @@ public class TodoForm extends FrameView {
     JPanel taskCardPanel = new JPanel(new CardLayout());
     JPanel tableCard = new JPanel();
     JPanel listCard = new JPanel();
-    String tableCardKey = "tableCard";
-    String listCardKey = "listCard";
-    String currentTaskCard = "tableCard";
+    public String tableCardKey = "tableCard";
+    public String listCardKey = "listCard";
+    public String currentTaskCard = "tableCard";
 
     /**
      *
@@ -229,6 +229,17 @@ public class TodoForm extends FrameView {
         tagList.addListSelectionListener(new ListSelectionListener() {
 
             public void valueChanged(ListSelectionEvent e) {
+
+                // show filter task to table , if current view is list then
+                // it will show table with filter table
+                if (currentTaskCard.equals(listCardKey)) {
+                    currentTaskCard = tableCardKey;
+                    CardLayout cl = (CardLayout) (taskCardPanel.getLayout());
+                    cl.show(taskCardPanel, currentTaskCard);
+
+                }
+
+
                 try {
                     Object objectArray[] = tagList.getSelectedValues();
                     String selectedTags[] = new String[objectArray.length];
@@ -266,13 +277,13 @@ public class TodoForm extends FrameView {
         leftPanel.add(sp1, BorderLayout.CENTER);
 
 
-        JPanel archivePanel = new JPanel();
-        archivePanel.setLayout(new FlowLayout());
-        archivePanel.add(Box.createRigidArea(HGAP5));
-        archivePanel.add(new JButton("Archive"));
-        archivePanel.add(Box.createRigidArea(HGAP5));
-        archivePanel.add(new JButton("Trash"));
-        leftPanel.add(archivePanel, BorderLayout.SOUTH);
+//        JPanel archivePanel = new JPanel();
+//        archivePanel.setLayout(new FlowLayout());
+//        archivePanel.add(Box.createRigidArea(HGAP5));
+//        archivePanel.add(new JButton("Archive"));
+//        archivePanel.add(Box.createRigidArea(HGAP5));
+//        archivePanel.add(new JButton("Trash"));
+//        leftPanel.add(archivePanel, BorderLayout.SOUTH);
 
 
         JPanel rightNorthPanel = new JPanel();
@@ -303,7 +314,7 @@ public class TodoForm extends FrameView {
 
 
         JSeparator settingPanelSeparator = new JSeparator(JSeparator.HORIZONTAL);
-        settingPanel.add(new JButton("Setting"));
+       // settingPanel.add(new JButton("Setting"));
         settingPanel.add(languaeCmb);
         settingPanel.add(settingPanelSeparator);
 
@@ -317,12 +328,12 @@ public class TodoForm extends FrameView {
         taskLbl = new JLabel("Task");
         addTaskPanel.add(taskLbl);
         addTaskPanel.add(Box.createHorizontalStrut(10));
-        txtTaskName = new JTextField("", 35);
+        txtTaskName = new JTextField("", 30);
         addTaskPanel.add(txtTaskName);
 
         addTaskPanel.add(Box.createHorizontalStrut(10));
         addTaskPanel.add(new JLabel("Date(yyyy-MM-dd)"));
-        txtDate = new JTextField("", 8);
+        txtDate = new JTextField("", 13);
         addTaskPanel.add(Box.createHorizontalStrut(10));
         addTaskPanel.add(txtDate);
         addTaskPanel.add(Box.createHorizontalStrut(10));
@@ -338,15 +349,15 @@ public class TodoForm extends FrameView {
 
         rightPanel.add(rightNorthPanel, BorderLayout.NORTH);
 
-        JPanel controlPanel = new JPanel();
-        titledBorder3 = new TitledBorder("Action");
-        controlPanel.setBorder(titledBorder3);
-        controlPanel.setLayout(new FlowLayout());
-        controlPanel.add(new JButton("Complete"));
-        controlPanel.add(new JButton("Archive"));
-        controlPanel.add(new JButton("Delete"));
-
-        rightPanel.add(controlPanel, BorderLayout.SOUTH);
+//        JPanel controlPanel = new JPanel();
+//        titledBorder3 = new TitledBorder("Action");
+//        controlPanel.setBorder(titledBorder3);
+//        controlPanel.setLayout(new FlowLayout());
+//        controlPanel.add(new JButton("Complete"));
+//        controlPanel.add(new JButton("Archive"));
+//        controlPanel.add(new JButton("Delete"));
+//
+//        rightPanel.add(controlPanel, BorderLayout.SOUTH);
 
 
 
@@ -362,6 +373,7 @@ public class TodoForm extends FrameView {
 
         taskJlist = new JList(taskListModel);
         taskJlist.setCellRenderer(new TaskListCellRenderer());
+        taskJlist.setComponentPopupMenu(taskListTable.getTaskPopupMenu());  // share same menu to table and llist
         JScrollPane scrlPane = new JScrollPane(taskJlist);
         scrlPane.setColumnHeaderView(new JLabel("Task"));
 
@@ -403,7 +415,7 @@ public class TodoForm extends FrameView {
         System.out.println(resources1.getString("TodoForm.leftPanelBorderTile") + "sss");
         titledBorder2.setTitle(resources1.getString("TodoForm.rightPanelBorderTile"));
         titledBorder1.setTitle(resources1.getString("TodoForm.leftPanelBorderTile"));
-        titledBorder3.setTitle(resources1.getString("TodoForm.southPanelBorderTile"));
+//        titledBorder3.setTitle(resources1.getString("TodoForm.southPanelBorderTile"));
         titledBorder4.setTitle(resources1.getString("TodoForm.addTaskPanelBorderTile"));
 
         taskLbl.setText(resources1.getString("TodoForm.taskLbl"));
@@ -807,8 +819,6 @@ public class TodoForm extends FrameView {
         cal.add(Calendar.DATE, 23);
         Date thirtyDays = cal.getTime();
         System.out.println("30 Days from now : " + thirtyDays);
-
-
         taskListTable.getSorter().setRowFilter(RowFilter.dateFilter(RowFilter.ComparisonType.BEFORE, today, 1));
 
     }

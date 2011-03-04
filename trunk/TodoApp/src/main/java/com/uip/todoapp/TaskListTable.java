@@ -68,14 +68,25 @@ public class TaskListTable {
         sortKeys.add(new RowSorter.SortKey(0, SortOrder.UNSORTED));
         sorter.setSortKeys(sortKeys);
 
+
+
+        taskListTable.setComponentPopupMenu(getTaskPopupMenu());
+        loadTask();
+    }
+
+    /*
+     *  create popup menu for task list table
+     *  to manipulate task
+     *  @return JPopupMenu instance
+     */
+    public JPopupMenu getTaskPopupMenu() {
+
         final JPopupMenu contextMenu = new JPopupMenu("Edit");
         contextMenu.add(makeMenuItem("edit"));
         contextMenu.add(makeMenuItem("delete"));
         contextMenu.add(makeMenuItem("complete"));
+        return contextMenu;
 
-
-        taskListTable.setComponentPopupMenu(contextMenu);
-        loadTask();
     }
 
     /*
@@ -158,13 +169,28 @@ public class TaskListTable {
     @Action
     public void delete() {
 
-        int row[] = taskListTable.getSelectedRows();
-        for (int i = 0; i < row.length; i++) {
 
-            Integer id = new Integer(taskListTable.getValueAt(row[i], 5).toString());
-            Task t = taskListTablemodel.getTaskByID(id);
-            taskController.deleteTask(t);
-            taskListTablemodel.removeRow(t.getId(), row[i]);
+
+
+        // user can edit task from table or list
+        if (mainForm.currentTaskCard.equals(mainForm.tableCardKey)) {
+            // if user delete task from table
+            int row[] = taskListTable.getSelectedRows();
+            for (int i = 0; i < row.length; i++) {
+
+                Integer id = new Integer(taskListTable.getValueAt(row[i], 5).toString());
+                Task t = taskListTablemodel.getTaskByID(id);
+                taskController.deleteTask(t);
+                taskListTablemodel.removeRow(t.getId(), row[i]);
+            }
+        } else {
+            // if user delete task from table
+            int[] index = mainForm.taskJlist.getSelectedIndices();
+            for (int i = 0; i < index.length; i++) {
+                Task task = (Task) mainForm.taskJlist.getModel().getElementAt(index[i]);
+                taskController.deleteTask(task);    // delete task from xml
+                taskListTablemodel.removeRow(task.getId(), index[i]);  // delete task from table model, since table model is shared by list also
+            }
 
 
         }
@@ -176,16 +202,22 @@ public class TaskListTable {
 
     @Action
     public void edit() {
-        int row = taskListTable.getSelectedRow();
+        Task t = new Task();
 
-        Integer id = new Integer(taskListTable.getValueAt(row, 5).toString());
+        // user can edit task from table or list
+        if (mainForm.currentTaskCard.equals(mainForm.tableCardKey)) {
+            int row = taskListTable.getSelectedRow();
+            Integer id = new Integer(taskListTable.getValueAt(row, 5).toString());
+            t = taskListTablemodel.getTaskByID(id);
 
-        Task t = taskListTablemodel.getTaskByID(id);
+        } else {
+
+            t = (Task) mainForm.taskJlist.getModel().getElementAt(mainForm.taskJlist.getSelectedIndex());
 
 
 
+        }
         mainForm.getTaskFrame().showTask(t);
-
         mainForm.showTaskForm(); // show task window
 
     }

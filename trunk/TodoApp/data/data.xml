@@ -8,17 +8,27 @@
       <dueDate>2010-09-09</dueDate>
       <description>a</description>
       <tag>Class, Nothing</tag>
-      <progress>44</progress>
+      <progress>80</progress>
       <status>0</status>
     </Task>
     <Task>
-      <id>2</id>
-      <taskName>Book1</taskName>
-      <priority>Low</priority>
+      <id>90</id>
+      <taskName>ad</taskName>
+      <priority>Medium</priority>
       <dueDate>2010-09-09</dueDate>
       <description />
-      <tag>Shopping</tag>
-      <progress>28</progress>
+      <tag>All</tag>
+      <progress>10</progress>
+      <status>0</status>
+    </Task>
+    <Task>
+      <id>91</id>
+      <taskName>df</taskName>
+      <priority>Low</priority>
+      <dueDate />
+      <description />
+      <tag />
+      <progress>14</progress>
       <status>0</status>
     </Task>
   </tasklist>

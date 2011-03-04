@@ -21,11 +21,8 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JSlider;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.border.TitledBorder;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.ResourceMap;
 
@@ -98,7 +95,7 @@ public class TaskFrame extends javax.swing.JDialog {
         t.setProgress(progressSlider.getValue());
         t.setDescription(txtDec.getText());
         t.setPriority(priorityCmb.getSelectedItem().toString());
-        t.setTag(getAllTag(tagList.getSelectedValuesList()));
+        t.setTag(getAllTag(tagList.getSelectedValues()));
 
 
        
@@ -192,9 +189,9 @@ public class TaskFrame extends javax.swing.JDialog {
      *     @return tags string
      */
 
-    public String getAllTag(List data) {
+    public String getAllTag(Object [] data) {
         String allTag = "";
-        int size = data.size();
+        int size = data.length;
         int i = 0;
         for (Object o : data) {
             

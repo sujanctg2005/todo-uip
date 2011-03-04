@@ -4,21 +4,19 @@
  */
 package com.uip.todoapp;
 
-import com.uip.todoapp.domain.Task;
+
 import com.uip.todoapp.utility.Utility;
 import java.awt.Color;
 import java.awt.Component;
-import java.util.ArrayList;
+
 import java.util.Date;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
-import javax.swing.RowSorter;
-import javax.swing.SortOrder;
+
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
+
 
 /**
  *
@@ -33,14 +31,7 @@ public class TaskTable extends JTable {
 
         super.setModel(model);
 
-           final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
-           this.setRowSorter(sorter);
-           ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
-           sortKeys.add(new RowSorter.SortKey(3, SortOrder.ASCENDING));
-           sortKeys.add(new RowSorter.SortKey(1, SortOrder.DESCENDING));
-           sortKeys.add(new RowSorter.SortKey(2, SortOrder.ASCENDING));
-           sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
-           sorter.setSortKeys(sortKeys);
+          
 
     }
 

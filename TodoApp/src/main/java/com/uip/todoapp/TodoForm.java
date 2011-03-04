@@ -754,7 +754,24 @@ public class TodoForm extends FrameView {
 
     @Action
     public void todaysTask() {
-        System.out.println("Task todays");
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+        Date today = cal.getTime();
+        //System.out.println("Today : " + today);
+
+        cal.add(Calendar.DATE, 7);
+        Date sevenDays = cal.getTime();
+        //System.out.println("7 Days from now : " + sevenDays);
+
+        cal.add(Calendar.DATE, 23);
+        Date thirtyDays = cal.getTime();
+        //System.out.println("30 Days from now : " + thirtyDays);
+
+
+        taskListTable.getSorter().setRowFilter(RowFilter.dateFilter(RowFilter.ComparisonType.BEFORE, today, 3));
+
     }
 
     /*
@@ -762,7 +779,7 @@ public class TodoForm extends FrameView {
      */
     @Action
     public void moreTask() {
-        System.out.println("Task monthly");
+        taskListTable.getSorter().setRowFilter(null);
     }
     /*
      *  show all weekly tasks

@@ -138,6 +138,9 @@ public class TaskListCellRenderer extends JPanel
         } else if (task.getPriority().equals(TaskFrame.priorityItems[2])) {
             lblTaskName.setForeground(Color.red);
             lblTaskName.setToolTipText(task.getPriority());
+        }else  {
+            lblTaskName.setForeground(Color.BLACK);
+            lblTaskName.setToolTipText(task.getPriority());
         }
 
 

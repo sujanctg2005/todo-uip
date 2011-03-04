@@ -57,14 +57,15 @@ public class TaskListTable {
         taskListTable.setPreferredScrollableViewportSize(new Dimension(500, 70));
         taskListTable.setFillsViewportHeight(true);
 
-
+        taskListTable.getColumn(".").setMaxWidth(0);
         sorter = new TableRowSorter<TableModel>(taskListTablemodel);
         taskListTable.setRowSorter(sorter);
         ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
-        sortKeys.add(new RowSorter.SortKey(3, SortOrder.ASCENDING));
-        sortKeys.add(new RowSorter.SortKey(1, SortOrder.DESCENDING));
-        sortKeys.add(new RowSorter.SortKey(2, SortOrder.ASCENDING));
-        sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+        sortKeys.add(new RowSorter.SortKey(4, SortOrder.UNSORTED));
+        sortKeys.add(new RowSorter.SortKey(3, SortOrder.UNSORTED));
+        sortKeys.add(new RowSorter.SortKey(1, SortOrder.UNSORTED));
+        sortKeys.add(new RowSorter.SortKey(2, SortOrder.UNSORTED));
+        sortKeys.add(new RowSorter.SortKey(0, SortOrder.UNSORTED));
         sorter.setSortKeys(sortKeys);
 
         final JPopupMenu contextMenu = new JPopupMenu("Edit");
@@ -145,6 +146,8 @@ public class TaskListTable {
     public void updateTask(Task t) {
 
         int row = taskListTable.getSelectedRow();
+
+
         taskListTablemodel.setValueAt(t, row);
 
     }
@@ -158,8 +161,10 @@ public class TaskListTable {
         int row[] = taskListTable.getSelectedRows();
         for (int i = 0; i < row.length; i++) {
 
-            taskController.deleteTask((Task) taskListTablemodel.getValueAt(row[i]));
-            taskListTablemodel.removeRow(row[i]);
+            Integer id = new Integer(taskListTable.getValueAt(row[i], 5).toString());
+            Task t = taskListTablemodel.getTaskByID(id);
+            taskController.deleteTask(t);
+            taskListTablemodel.removeRow(t.getId(), row[i]);
 
 
         }
@@ -172,7 +177,12 @@ public class TaskListTable {
     @Action
     public void edit() {
         int row = taskListTable.getSelectedRow();
-        Task t = (Task) taskListTablemodel.getValueAt(row);
+
+        Integer id = new Integer(taskListTable.getValueAt(row, 5).toString());
+
+        Task t = taskListTablemodel.getTaskByID(id);
+
+
 
         mainForm.getTaskFrame().showTask(t);
 

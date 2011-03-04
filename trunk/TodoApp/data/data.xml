@@ -2,24 +2,42 @@
 <todo>
   <tasklist>
     <Task>
-      <id>70</id>
-      <taskName>w</taskName>
-      <priority>Medium</priority>
-      <dueDate>2011-03-04</dueDate>
-      <description>sdf</description>
-      <tag>Class</tag>
-      <progress>10</progress>
+      <id>1</id>
+      <taskName>task</taskName>
+      <priority>Low</priority>
+      <dueDate>2010-09-09</dueDate>
+      <description>a</description>
+      <tag>Class, Nothing</tag>
+      <progress>44</progress>
+      <status>0</status>
+    </Task>
+    <Task>
+      <id>2</id>
+      <taskName>Book1</taskName>
+      <priority>Low</priority>
+      <dueDate>2010-09-09</dueDate>
+      <description />
+      <tag>Shopping</tag>
+      <progress>28</progress>
       <status>0</status>
     </Task>
   </tasklist>
   <taglist>
     <Tag>
       <tagID>1</tagID>
+      <tagName>All</tagName>
+    </Tag>
+    <Tag>
+      <tagID>2</tagID>
       <tagName>Class</tagName>
     </Tag>
     <Tag>
-      <tagID>11</tagID>
-      <tagName>s</tagName>
+      <tagID>3</tagID>
+      <tagName>Shopping</tagName>
+    </Tag>
+    <Tag>
+      <tagID>3</tagID>
+      <tagName>Nothing</tagName>
     </Tag>
   </taglist>
 </todo>

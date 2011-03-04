@@ -23,6 +23,8 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import org.jdesktop.application.Action;
 import org.jdesktop.application.FrameView;
@@ -222,6 +224,40 @@ public class TodoForm extends FrameView {
         contextMenu.add(makeMenuItem("addTag"));
         contextMenu.add(makeMenuItem("deleteTag"));
         tagList.setComponentPopupMenu(contextMenu);
+
+
+        tagList.addListSelectionListener(new ListSelectionListener() {
+
+            public void valueChanged(ListSelectionEvent e) {
+                try {
+                    Object objectArray[] = tagList.getSelectedValues();
+                    String selectedTags[] = new String[objectArray.length];
+                    for (int i = 0; i < objectArray.length; i++) {
+                        selectedTags[i] = objectArray[i].toString();
+                        //System.out.print(selectedTags[i]);
+                    }
+
+                    if (selectedTags[0].equals("All")) {
+                        taskListTable.getSorter().setRowFilter(null);
+                    } else {
+                        ArrayList<RowFilter<Object, Object>> filters = new ArrayList<RowFilter<Object, Object>>(2);
+                        for (int i = 0; i < selectedTags.length; i++) {
+                            filters.add(RowFilter.regexFilter(selectedTags[i], 3));
+                            //System.out.println(selectedTags[i]);
+                        }
+                        taskListTable.getSorter().setRowFilter(RowFilter.andFilter(filters));
+                    }
+                } catch (Exception es) {
+                    System.out.println(es);
+
+                }
+
+
+
+
+            }
+        });
+
 
 
         JScrollPane sp1 = new JScrollPane(tagList);
@@ -668,7 +704,10 @@ public class TodoForm extends FrameView {
         int index = tagList.getSelectedIndex();
         Tag t = (Tag) model.getElementAt(index);
 
-        System.out.println("ss " + t.getTagName());
+        if (t.getTagName().equals("All")) // all tag to show all type of task
+        {
+            return;
+        }
 
         if (!taskController.isTagUsed(t)) {
             taskController.deleteTag(t);
@@ -767,10 +806,10 @@ public class TodoForm extends FrameView {
 
         cal.add(Calendar.DATE, 23);
         Date thirtyDays = cal.getTime();
-        //System.out.println("30 Days from now : " + thirtyDays);
+        System.out.println("30 Days from now : " + thirtyDays);
 
 
-        taskListTable.getSorter().setRowFilter(RowFilter.dateFilter(RowFilter.ComparisonType.BEFORE, today, 3));
+        taskListTable.getSorter().setRowFilter(RowFilter.dateFilter(RowFilter.ComparisonType.BEFORE, today, 1));
 
     }
 

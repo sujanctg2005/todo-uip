@@ -7,7 +7,9 @@ package com.uip.todoapp;
 import com.uip.todoapp.domain.Task;
 import com.uip.todoapp.utility.Utility;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import java.util.Vector;
 import javax.swing.table.AbstractTableModel;
@@ -31,7 +33,7 @@ public class TaskModel extends AbstractTableModel {
                     resourceMap.getString("taskListTable.date"),
                     resourceMap.getString("taskListTable.priority"),
                     resourceMap.getString("taskListTable.tag"),
-                    resourceMap.getString("taskListTable.progress")};
+                    resourceMap.getString("taskListTable.progress"), "."};
 
 
     }
@@ -62,8 +64,9 @@ public class TaskModel extends AbstractTableModel {
      */
 
     public Object getValueAt(int row, int column) {
-        if(row>=taskList.size())
+        if (row >= taskList.size()) {
             return "";
+        }
 
         Task t = taskList.elementAt(row);
         if (column == 0) {
@@ -79,8 +82,10 @@ public class TaskModel extends AbstractTableModel {
 
         } else if (column == 4) {
             return t.getProgress();
+        } else if (column == 5) {
+            return t.getId();
         } else {
-            return null;
+            return "";
         }
 
     }
@@ -95,6 +100,21 @@ public class TaskModel extends AbstractTableModel {
     }
 
     /*
+     *
+     */
+    public Task getTaskByID(Integer taskId) {
+        for (Task t : taskList) {
+            if (t.getId().intValue() == taskId.intValue()) {
+                return t;
+
+            }
+        }
+
+        return null;
+    }
+
+
+    /*
      * JTable uses this method to determine the default renderer/
      * editor for each cell.  If we didn't implement this method,
      * then the last column would contain text ("true"/"false"),
@@ -102,6 +122,13 @@ public class TaskModel extends AbstractTableModel {
      */
     @Override
     public Class getColumnClass(int c) {
+        // if first row task date is null then it will
+        //create exception to get class type
+
+        if (getValueAt(0, c) == null) {
+            return (new Date()).getClass();
+        }
+
         return getValueAt(0, c).getClass();
     }
 
@@ -151,12 +178,15 @@ public class TaskModel extends AbstractTableModel {
 
     }
 
+
+
+
     /*
      *  add update task object in data model
      */
     public void setValueAt(Task t, int row) {
 
-
+        row=geteDataIndex(t.getId());
 
 //
         setValueAt(t.getTaskName(), row, 0);
@@ -202,12 +232,42 @@ public class TaskModel extends AbstractTableModel {
         }
     }
 
-    public void removeRow(int row) {
-        taskList.remove(row);
-        fireTableRowsDeleted(row, row);
+    /*
+       * after sorting the table table index is chnaged ,
+       *  so table index and data index won't be same
+       */
+
+    public int geteDataIndex(Integer taskId){
+
+        int i = 0;
+            // after sorting the table table index is chnaged ,
+            // so table index and data index won't be same
+            for (Task task : taskList) {
+                i++;
+                if (task.getId().intValue() == taskId.intValue()) {
+                    break;
+
+                }
+            }
+            i--;
+            return i;
+    }
+
+
+    /*
+     *  remove task from  data model
+     * @param taskId Id of task to delete
+     */
+
+    public void removeRow(Integer taskId, int row) {
+        int i = geteDataIndex(taskId);
+      
+       
+        taskList.remove(i);
+        fireTableRowsDeleted(i, i);
         for (AbstractTaskListener listener : dataListener) {
 
-            listener.removeTaskEvent(row);
+            listener.removeTaskEvent(i);  // here data index will be same to data model , table index is changed after sort
         }
     }
 }

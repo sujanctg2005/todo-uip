@@ -102,7 +102,8 @@ public class TaskTable extends JTable {
 
                 return createBar(progress, progress.toString());
             } else {
-                return null;
+                lable.setText("");
+                return  lable;
             }
 
         }

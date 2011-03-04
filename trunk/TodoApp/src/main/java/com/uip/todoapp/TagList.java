@@ -48,7 +48,7 @@ public class TagList {
      */
     public static void addTag(Tag t) {
         if (model.indexOf(t) == -1) {
-            model.add(0, t);
+            model.add(1, t);
         }
     }
     /*

@@ -128,7 +128,7 @@ public class TaskFrame extends javax.swing.JDialog {
     public void showTask(Task t) {
         try {
 
-            System.out.println(t.getDueDate());
+           
             selTask = t;
             txtTaskName.setText(t.getTaskName());
             txtDate.setText(Utility.formatDateShort(t.getDueDate()));

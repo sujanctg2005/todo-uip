@@ -41,10 +41,8 @@ import org.jdesktop.application.SingleFrameApplication;
  */
 public class TodoForm extends FrameView {
 
-    private static ResourceBundle resources;
     private JMenuBar menubar;
     private JToolBar toolbar;
-    private Hashtable menuItems;
     private JComponent status;
     ResourceMap resourceMap;
     javax.swing.ActionMap actionMap;
@@ -60,6 +58,8 @@ public class TodoForm extends FrameView {
     DefaultListModel model;
     TagList tagObj = TagList.getInstance();
     TagFrame tagFrame;
+    TaskListModel taskListModel;
+    JList taskJlist;   // view task as list
     /**
      * Suffix applied to the key used in resource file
      * lookups for an image.
@@ -245,7 +245,7 @@ public class TodoForm extends FrameView {
 
         JPanel settingPanel = new JPanel();
         settingPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-        Object[] items = {"Select Language", "English", "Swedish", "French"};
+        Object[] items = {"Select Language", "English", "Swedish"};
         JComboBox languaeCmb = new JComboBox(items);
         languaeCmb.addActionListener(new ActionListener() {
 
@@ -320,9 +320,13 @@ public class TodoForm extends FrameView {
 
         // demo task list
 
-        String labels[] = {"Task1", "Task2", "Task3", "Task4", "Task5", "Task6"};
-        tagList = new JList(labels);
-        JScrollPane scrlPane = new JScrollPane(tagList);
+
+
+        taskListModel = new TaskListModel(taskListTable.getTaskListTablemodel());
+
+        taskJlist = new JList(taskListModel);
+        taskJlist.setCellRenderer(new TaskListCellRenderer());
+        JScrollPane scrlPane = new JScrollPane(taskJlist);
         scrlPane.setColumnHeaderView(new JLabel("Task"));
 
 

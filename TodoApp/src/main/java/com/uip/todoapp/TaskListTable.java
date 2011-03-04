@@ -6,24 +6,21 @@ package com.uip.todoapp;
 
 import com.uip.todoapp.action.TaskController;
 import com.uip.todoapp.domain.Task;
-import com.uip.todoapp.utility.Utility;
-import java.awt.Color;
-import java.awt.Component;
+
 import org.jdesktop.application.Action;
 import java.awt.Dimension;
 import java.util.List;
-import java.util.Vector;
+
 import javax.swing.JComponent;
-import javax.swing.JLabel;
+
 
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import javax.swing.JProgressBar;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.JScrollPane;
+
+
+
 import org.jdesktop.application.ResourceMap;
 
 /**
@@ -63,6 +60,13 @@ public class TaskListTable {
 
         taskListTable.setComponentPopupMenu(contextMenu);
         loadTask();
+    }
+
+    /*
+     *  this method to get the table model
+     */
+    public TaskModel getTaskListTablemodel() {
+        return taskListTablemodel;
 
     }
 
@@ -118,22 +122,20 @@ public class TaskListTable {
     public void updateTask(Task t) {
 
         int row = taskListTable.getSelectedRow();
-       taskListTablemodel.setValueAt(t, row);
+        taskListTablemodel.setValueAt(t, row);
 
     }
-   
- 
+
     /*
      *   delete task from window
      */
-
     @Action
     public void delete() {
 
         int row[] = taskListTable.getSelectedRows();
         for (int i = 0; i < row.length; i++) {
 
-            taskController.deleteTask( (Task)taskListTablemodel.getValueAt(row[i], 0));
+            taskController.deleteTask((Task) taskListTablemodel.getValueAt(row[i], 0));
             taskListTablemodel.removeRow(row[i]);
 
 
@@ -148,7 +150,7 @@ public class TaskListTable {
     public void edit() {
         int row = taskListTable.getSelectedRow();
         Task t = (Task) taskListTablemodel.getValueAt(row, 0);
-        
+
         mainForm.getTaskFrame().showTask(t);
 
         mainForm.showTaskForm(); // show task window

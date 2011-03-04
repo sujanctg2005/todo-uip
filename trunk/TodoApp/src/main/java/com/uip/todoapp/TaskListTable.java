@@ -9,6 +9,7 @@ import com.uip.todoapp.domain.Task;
 
 import org.jdesktop.application.Action;
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComponent;
@@ -18,6 +19,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import javax.swing.JScrollPane;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 
 
@@ -35,11 +40,12 @@ public class TaskListTable {
     javax.swing.ActionMap actionMap;
     TaskController taskController;
     TodoForm mainForm;
-
+    final TableRowSorter<TableModel> sorter; // table data sorter
     /*
      *   default constructor
      *   @param mainForm to access main frame
      */
+
     public TaskListTable(TodoForm mainForm) {
         this.mainForm = mainForm;
         resourceMap = org.jdesktop.application.Application.getInstance(TodoApplication.class).getContext().getResourceMap(TaskListTable.class);
@@ -52,6 +58,15 @@ public class TaskListTable {
         taskListTable.setFillsViewportHeight(true);
 
 
+        sorter = new TableRowSorter<TableModel>(taskListTablemodel);
+        taskListTable.setRowSorter(sorter);
+        ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
+        sortKeys.add(new RowSorter.SortKey(3, SortOrder.ASCENDING));
+        sortKeys.add(new RowSorter.SortKey(1, SortOrder.DESCENDING));
+        sortKeys.add(new RowSorter.SortKey(2, SortOrder.ASCENDING));
+        sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+        sorter.setSortKeys(sortKeys);
+
         final JPopupMenu contextMenu = new JPopupMenu("Edit");
         contextMenu.add(makeMenuItem("edit"));
         contextMenu.add(makeMenuItem("delete"));
@@ -60,6 +75,14 @@ public class TaskListTable {
 
         taskListTable.setComponentPopupMenu(contextMenu);
         loadTask();
+    }
+
+    /*
+     *  get table default sorter
+     *  @return TableRowSorter instance
+     */
+    public TableRowSorter<TableModel> getSorter() {
+        return sorter;
     }
 
     /*
@@ -135,7 +158,7 @@ public class TaskListTable {
         int row[] = taskListTable.getSelectedRows();
         for (int i = 0; i < row.length; i++) {
 
-            taskController.deleteTask((Task) taskListTablemodel.getValueAt(row[i], 0));
+            taskController.deleteTask((Task) taskListTablemodel.getValueAt(row[i]));
             taskListTablemodel.removeRow(row[i]);
 
 

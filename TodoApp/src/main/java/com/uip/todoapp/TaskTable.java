@@ -8,11 +8,17 @@ import com.uip.todoapp.domain.Task;
 import com.uip.todoapp.utility.Utility;
 import java.awt.Color;
 import java.awt.Component;
+import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -26,6 +32,16 @@ public class TaskTable extends JTable {
     public TaskTable(AbstractTableModel model) {
 
         super.setModel(model);
+
+           final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(model);
+           this.setRowSorter(sorter);
+           ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
+           sortKeys.add(new RowSorter.SortKey(3, SortOrder.ASCENDING));
+           sortKeys.add(new RowSorter.SortKey(1, SortOrder.DESCENDING));
+           sortKeys.add(new RowSorter.SortKey(2, SortOrder.ASCENDING));
+           sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+           sorter.setSortKeys(sortKeys);
+
     }
 
     @Override
@@ -41,7 +57,7 @@ public class TaskTable extends JTable {
     class ProgRenderer implements TableCellRenderer {
 
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            Task t = (Task) value;
+            // Task t = (Task) value;
             JLabel lable = new JLabel();
             lable.setOpaque(true);
             if (isSelected) {
@@ -51,41 +67,58 @@ public class TaskTable extends JTable {
             }
 
             if (column == 0) {
-                lable.setText(t.getTaskName());
+                lable.setText(value.toString());
                 return lable;
             } else if (column == 1) {
-                lable.setText(Utility.formatDateShort(t.getDueDate()));
+                if (value != null) {
+                    lable.setText(Utility.formatDateShort((Date) value));
+                }
                 return lable;
             } else if (column == 2) {
-                JLabel priorityLabel = new JLabel(t.getPriority());
+                String pri = "";
+                if (value != null) {
+                    pri = value.toString();
+                }
+
+                JLabel priorityLabel = new JLabel(pri);
                 priorityLabel.setOpaque(true);
-                if (t.getPriority().equals(TaskFrame.priorityItems[0])) {
+                if (pri.equals(TaskFrame.priorityItems[0])) {
                     priorityLabel.setBackground(Color.YELLOW);
-                    priorityLabel.setToolTipText(t.getPriority());
-                } else if (t.getPriority().equals(TaskFrame.priorityItems[1])) {
+                    priorityLabel.setToolTipText(pri);
+                } else if (pri.equals(TaskFrame.priorityItems[1])) {
                     priorityLabel.setBackground(Color.BLUE);
-                    priorityLabel.setToolTipText(t.getPriority());
-                } else if (t.getPriority().equals(TaskFrame.priorityItems[2])) {
+                    priorityLabel.setToolTipText(pri);
+                } else if (pri.equals(TaskFrame.priorityItems[2])) {
                     priorityLabel.setBackground(Color.red);
-                    priorityLabel.setToolTipText(t.getPriority());
+                    priorityLabel.setToolTipText(pri);
                 }
 
                 return priorityLabel;
             } else if (column == 3) {
-                lable.setText(t.getTag());
+                String tag = "";
+                if (value != null) {
+                    tag = value.toString();
+                }
+
+                lable.setText(tag);
                 return lable;
 
 
             } else if (column == 4) {
-                return createBar(t.getProgress(), t.getProgress().toString());
+              Integer progress =0;
+              if(value!=null)
+                  progress = (Integer)value;
+
+                return createBar(progress, progress.toString());
             } else {
                 return null;
             }
 
         }
-/*
- *  create progressbar to show task progress
- */
+        /*
+         *  create progressbar to show task progress
+         */
+
         public JProgressBar createBar(int percentDone, String text) {
             JProgressBar progressBar = new JProgressBar(0, 100);
 

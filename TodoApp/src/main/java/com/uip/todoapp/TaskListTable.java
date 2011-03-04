@@ -149,7 +149,7 @@ public class TaskListTable {
     @Action
     public void edit() {
         int row = taskListTable.getSelectedRow();
-        Task t = (Task) taskListTablemodel.getValueAt(row, 0);
+        Task t = (Task) taskListTablemodel.getValueAt(row);
 
         mainForm.getTaskFrame().showTask(t);
 

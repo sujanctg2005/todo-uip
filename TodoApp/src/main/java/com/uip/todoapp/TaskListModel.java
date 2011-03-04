@@ -44,7 +44,7 @@ public class TaskListModel<E> extends AbstractListModel<E>
      */
 
     public E getElementAt(int index) {
-        return (E) taskModel.getValueAt(index, index);
+        return (E) taskModel.getValueAt(index);
     }
 
     public void updateTaskEvent(int index) {

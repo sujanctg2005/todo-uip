@@ -302,7 +302,6 @@ public class TaskFrame extends javax.swing.JDialog {
         setModal(true);
         setName("Add Task"); // NOI18N
         setResizable(false);
-
         pack();
     }
 }

@@ -38,7 +38,7 @@ public class TaskModel extends AbstractTableModel {
 
     public void addListener(AbstractTaskListener listener) {
         dataListener.add(listener);
-        
+
     }
     /*   get total column
      *  @return number of column
@@ -62,6 +62,34 @@ public class TaskModel extends AbstractTableModel {
      */
 
     public Object getValueAt(int row, int column) {
+        if(row>=taskList.size())
+            return "";
+
+        Task t = taskList.elementAt(row);
+        if (column == 0) {
+            return t.getTaskName();
+        } else if (column == 1) {
+
+            return t.getDueDate();
+        } else if (column == 2) {
+
+            return t.getPriority();
+        } else if (column == 3) {
+            return t.getTag();
+
+        } else if (column == 4) {
+            return t.getProgress();
+        } else {
+            return null;
+        }
+
+    }
+    /*   get task from data model by index
+     *  @return  Task instance
+     */
+
+    public Object getValueAt(int row) {
+
         Task t = taskList.elementAt(row);
         return t;
     }
@@ -85,7 +113,7 @@ public class TaskModel extends AbstractTableModel {
     public boolean isCellEditable(int row, int col) {
         //Note that the data/cell address is constant,
         //no matter where the cell appears onscreen.
-       return false;
+        return false;
     }
 
     /*
@@ -116,7 +144,7 @@ public class TaskModel extends AbstractTableModel {
 
         fireTableCellUpdated(row, column);
 
-        for(AbstractTaskListener listener:dataListener){
+        for (AbstractTaskListener listener : dataListener) {
 
             listener.updateTaskEvent(row);
         }
@@ -150,7 +178,7 @@ public class TaskModel extends AbstractTableModel {
         taskList.add(row, data);
         justifyRows(row, row + 1);
         fireTableRowsInserted(row, row);
-        for(AbstractTaskListener listener:dataListener){
+        for (AbstractTaskListener listener : dataListener) {
 
             listener.newTaskEvent(row);
         }
@@ -177,7 +205,7 @@ public class TaskModel extends AbstractTableModel {
     public void removeRow(int row) {
         taskList.remove(row);
         fireTableRowsDeleted(row, row);
-        for(AbstractTaskListener listener:dataListener){
+        for (AbstractTaskListener listener : dataListener) {
 
             listener.removeTaskEvent(row);
         }

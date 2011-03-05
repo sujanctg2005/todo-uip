@@ -17,16 +17,23 @@ import java.util.ResourceBundle;
 public class Language {
 
     private static ResourceBundle resources;
+    /*
+     *  get language resource bundle
+     *  @param local1 define current local type
+     *  @return instance of ResourceBundle
+     */
+    public static Locale locale1;
 
+    public static void setLocal(Locale local) {
+        locale1 = local;
+    }
 
-/*
- *  get language resource bundle
- *  @param local1 define current local type
- *  @return instance of ResourceBundle
- */
-    public static ResourceBundle getResourceBundle(Locale locale1) {
+    public static ResourceBundle getResourceBundle() {
         try {
-            
+            if (locale1 == null) {
+                locale1 = Locale.getDefault();
+            }
+
             resources = ResourceBundle.getBundle("com.uip.todoapp.resources.language",
                     locale1);
         } catch (MissingResourceException mre) {

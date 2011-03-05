@@ -8,6 +8,11 @@ import com.uip.todoapp.action.TaskController;
 
 import com.uip.todoapp.domain.Tag;
 import com.uip.todoapp.domain.Task;
+import com.uip.todoapp.theme.AquaTheme;
+import com.uip.todoapp.theme.CharcoalTheme;
+import com.uip.todoapp.theme.ContrastTheme;
+import com.uip.todoapp.theme.EmeraldTheme;
+import com.uip.todoapp.theme.RubyTheme;
 
 import com.uip.todoapp.utility.Language;
 import com.uip.todoapp.utility.Utility;
@@ -25,6 +30,9 @@ import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.plaf.metal.DefaultMetalTheme;
+import javax.swing.plaf.metal.MetalLookAndFeel;
+import javax.swing.plaf.metal.MetalTheme;
 
 import org.jdesktop.application.Action;
 import org.jdesktop.application.FrameView;
@@ -198,14 +206,63 @@ public class TodoForm extends FrameView {
         searchTextField =
                 new JTextField(resourceMap.getString("searchTextBox.Title"), 15);
         searchPanel.add(searchTextField);
-        JPanel searchButtonPanel = new JPanel();
+        searchTextField.addFocusListener(new FocusListener() {
 
+            public void focusGained(FocusEvent e) {
+                JTextField textField = (JTextField) e.getSource();
+                ResourceBundle resources1 = Language.getResourceBundle();
+                if (textField.getText().equals(resources1.getString("TodoForm.txtSearch"))) {
+
+                    textField.setText("");
+                }
+            }
+
+            public void focusLost(FocusEvent e) {
+                JTextField textField = (JTextField) e.getSource();
+                ResourceBundle resources1 = Language.getResourceBundle();
+                textField.setText(resources1.getString("TodoForm.txtSearch"));
+            }
+        });
+        searchTextField.setToolTipText("Case sensitive( Task name , Priority)");
+        searchTextField.addKeyListener(
+                new KeyAdapter() {
+                    // user can see the search result while typeing
+
+                    public void keyReleased(KeyEvent e) {
+                        JTextField textField = (JTextField) e.getSource();
+                        String text = textField.getText();
+
+                        ResourceBundle resources1 = Language.getResourceBundle();
+                        if (!textField.getText().equals(resources1.getString("TodoForm.txtSearch"))) {
+
+                            taskListTable.getSorter().setRowFilter(RowFilter.regexFilter("^" + textField.getText(), 0, 2));
+
+                        } else if (textField.getText().trim().equals("")) {
+                            taskListTable.getSorter().setRowFilter(null);
+                        } else {
+                            taskListTable.getSorter().setRowFilter(null);
+                        }
+                        System.out.println("dd " + textField.getText());
+                    }
+
+                    public void keyTyped(KeyEvent e) {
+                    }
+
+                    public void keyPressed(KeyEvent e) {
+                    }
+                });
+
+        JPanel searchButtonPanel = new JPanel();
         todaysBtn = new FancyButton("");
+
         todaysBtn.setAction(actionMap.get("todaysTask"));
         weeklyBtn = new FancyButton("");
+
         weeklyBtn.setAction(actionMap.get("weeklyTask"));
         moreBtn = new FancyButton("");
-        moreBtn.setAction(actionMap.get("moreTask"));
+
+        moreBtn.setAction(actionMap.get(
+                "moreTask"));
 
         searchButtonPanel.add(todaysBtn);
         searchButtonPanel.add(weeklyBtn);
@@ -221,55 +278,56 @@ public class TodoForm extends FrameView {
         tagList = tagObj.getTagList();
 
         final JPopupMenu contextMenu = new JPopupMenu("Edit");
-        contextMenu.add(makeMenuItem("addTag"));
+
+        contextMenu.add(makeMenuItem(
+                "addTag"));
         contextMenu.add(makeMenuItem("deleteTag"));
         tagList.setComponentPopupMenu(contextMenu);
 
 
-        tagList.addListSelectionListener(new ListSelectionListener() {
+        tagList.addListSelectionListener(
+                new ListSelectionListener() {
 
-            public void valueChanged(ListSelectionEvent e) {
+                    public void valueChanged(ListSelectionEvent e) {
 
-                // show filter task to table , if current view is list then
-                // it will show table with filter table
-                if (currentTaskCard.equals(listCardKey)) {
-                    currentTaskCard = tableCardKey;
-                    CardLayout cl = (CardLayout) (taskCardPanel.getLayout());
-                    cl.show(taskCardPanel, currentTaskCard);
+                        // show filter task to table , if current view is list then
+                        // it will show table with filter table
+                        if (currentTaskCard.equals(listCardKey)) {
+                            currentTaskCard = tableCardKey;
+                            CardLayout cl = (CardLayout) (taskCardPanel.getLayout());
+                            cl.show(taskCardPanel, currentTaskCard);
 
-                }
-
-
-                try {
-                    Object objectArray[] = tagList.getSelectedValues();
-                    String selectedTags[] = new String[objectArray.length];
-                    for (int i = 0; i < objectArray.length; i++) {
-                        selectedTags[i] = objectArray[i].toString();
-                        //System.out.print(selectedTags[i]);
-                    }
-
-                    if (selectedTags[0].equals("All")) {
-                        taskListTable.getSorter().setRowFilter(null);
-                    } else {
-                        ArrayList<RowFilter<Object, Object>> filters = new ArrayList<RowFilter<Object, Object>>(2);
-                        for (int i = 0; i < selectedTags.length; i++) {
-                            filters.add(RowFilter.regexFilter(selectedTags[i], 3));
-                            //System.out.println(selectedTags[i]);
                         }
-                        taskListTable.getSorter().setRowFilter(RowFilter.andFilter(filters));
+
+
+                        try {
+                            Object objectArray[] = tagList.getSelectedValues();
+                            String selectedTags[] = new String[objectArray.length];
+                            for (int i = 0; i < objectArray.length; i++) {
+                                selectedTags[i] = objectArray[i].toString();
+                                //System.out.print(selectedTags[i]);
+                            }
+
+                            if (selectedTags[0].equals("All")) {
+                                taskListTable.getSorter().setRowFilter(null);
+                            } else {
+                                ArrayList<RowFilter<Object, Object>> filters = new ArrayList<RowFilter<Object, Object>>(2);
+                                for (int i = 0; i < selectedTags.length; i++) {
+                                    filters.add(RowFilter.regexFilter(selectedTags[i], 3));
+                                    //System.out.println(selectedTags[i]);
+                                }
+                                taskListTable.getSorter().setRowFilter(RowFilter.andFilter(filters));
+                            }
+                        } catch (Exception es) {
+                            System.out.println(es);
+
+                        }
+
+
+
+
                     }
-                } catch (Exception es) {
-                    System.out.println(es);
-
-                }
-
-
-
-
-            }
-        });
-
-
+                });
 
         JScrollPane sp1 = new JScrollPane(tagList);
         sp1.setColumnHeaderView(new JLabel("Tag"));
@@ -299,14 +357,20 @@ public class TodoForm extends FrameView {
             public void actionPerformed(ActionEvent e) {
                 JComboBox cb = (JComboBox) e.getSource();
                 String language = (String) cb.getSelectedItem();
+
+
                 if (language.equals("English")) {
-                    changeLanguage(Locale.getDefault());
+
+                    Language.setLocal(Locale.getDefault());
+                    changeLanguage();
+
+
 
                 } else if (language.equals("Swedish")) {
-                    changeLanguage(new Locale("sv"));
+                    Language.setLocal(new Locale("sv"));
+                    changeLanguage();
 
-                } else if (language.equals("French")) {
-                    changeLanguage(new Locale("fn"));
+
 
                 }
             }
@@ -314,7 +378,7 @@ public class TodoForm extends FrameView {
 
 
         JSeparator settingPanelSeparator = new JSeparator(JSeparator.HORIZONTAL);
-       // settingPanel.add(new JButton("Setting"));
+        // settingPanel.add(new JButton("Setting"));
         settingPanel.add(languaeCmb);
         settingPanel.add(settingPanelSeparator);
 
@@ -399,7 +463,11 @@ public class TodoForm extends FrameView {
         mpanel.add("North", createToolbar());
         mpanel.add("Center", splitPane);
         mpanel.add("South", createStatusbar());
+
+
         return mpanel;
+
+
 
     }
     /*
@@ -407,11 +475,12 @@ public class TodoForm extends FrameView {
      *  @param locale1 , Local instance for language
      */
 
-    public void changeLanguage(Locale locale1) {
+    public void changeLanguage() {
+
+        ResourceBundle resources1 = Language.getResourceBundle();
 
 
 
-        ResourceBundle resources1 = Language.getResourceBundle(locale1);
         System.out.println(resources1.getString("TodoForm.leftPanelBorderTile") + "sss");
         titledBorder2.setTitle(resources1.getString("TodoForm.rightPanelBorderTile"));
         titledBorder1.setTitle(resources1.getString("TodoForm.leftPanelBorderTile"));
@@ -428,6 +497,11 @@ public class TodoForm extends FrameView {
 
         mainFrame.validate();
         mainFrame.repaint();
+
+
+
+
+
     }
 
     /**
@@ -446,7 +520,11 @@ public class TodoForm extends FrameView {
     private JMenuItem makeMenuItem(String label) {
         JMenuItem item = new JMenuItem(actionMap.get(label));
 
+
+
         return item;
+
+
     }
 
     /**
@@ -455,15 +533,23 @@ public class TodoForm extends FrameView {
      */
     public JComponent taskListTable() {
         taskListTable = new TaskListTable(this);
+
+
         return taskListTable.getTasklistTable();
+
+
     }
 
     public void addTaskToTable(Task t) {
         taskListTable.addTask(t);
+
+
     }
 
     public void updateTaskToTable(Task t) {
         taskListTable.updateTask(t);
+
+
     }
 
     /**
@@ -476,10 +562,16 @@ public class TodoForm extends FrameView {
         p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
         p.setAlignmentY(JPanel.TOP_ALIGNMENT);
         p.setAlignmentX(JPanel.LEFT_ALIGNMENT);
+
+
         if (threeD) {
             p.setBorder(loweredBorder);
+
+
         }
         return p;
+
+
     }
 
     /**
@@ -492,10 +584,16 @@ public class TodoForm extends FrameView {
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
         p.setAlignmentY(JPanel.TOP_ALIGNMENT);
         p.setAlignmentX(JPanel.LEFT_ALIGNMENT);
+
+
         if (threeD) {
             p.setBorder(loweredBorder);
+
+
         }
         return p;
+
+
     }
 
     /**
@@ -505,7 +603,11 @@ public class TodoForm extends FrameView {
     protected Component createStatusbar() {
         // need to do something reasonable here
         status = new StatusBar();
+
+
         return status;
+
+
     }
 
     /**
@@ -516,15 +618,26 @@ public class TodoForm extends FrameView {
     private Component createToolbar() {
         toolbar = new JToolBar();
         String[] toolKeys = tokenize(resourceMap.getString("toolbar"));
-        for (int i = 0; i < toolKeys.length; i++) {
+
+
+        for (int i = 0; i
+                < toolKeys.length; i++) {
             if (toolKeys[i].equals("-")) {
                 toolbar.add(Box.createHorizontalStrut(5));
+
+
             } else {
                 toolbar.add(createTool(toolKeys[i]));
+
+
             }
         }
         toolbar.add(Box.createHorizontalGlue());
+
+
         return toolbar;
+
+
     }
 
     /**
@@ -532,6 +645,8 @@ public class TodoForm extends FrameView {
      */
     protected Component createTool(String key) {
         return createToolbarButton(key);
+
+
     }
 
     /**
@@ -549,6 +664,8 @@ public class TodoForm extends FrameView {
 
             public float getAlignmentY() {
                 return 0.5f;
+
+
             }
         };
         b.setRequestFocusEnabled(false);
@@ -557,11 +674,17 @@ public class TodoForm extends FrameView {
 
 
         String tip = resourceMap.getString(key + tipSuffix);
+
+
         if (tip != null) {
             b.setToolTipText(tip);
+
+
         }
 
         return b;
+
+
     }
 
     protected JMenuBar createMenubar() {
@@ -571,31 +694,51 @@ public class TodoForm extends FrameView {
 
 
         String[] menuKeys = tokenize(resourceMap.getString("menubar"));
-        for (int i = 0; i < menuKeys.length; i++) {
+
+
+        for (int i = 0; i
+                < menuKeys.length; i++) {
 
             System.out.println(menuKeys[i]);
 
             JMenu m = createMenu(menuKeys[i]);
+
+
             if (m != null) {
                 mb.add(m);
+
+
             }
         }
         this.menubar = mb;
+
+
         return mb;
+
+
     }
 
     protected JMenu createMenu(String key) {
         String[] itemKeys = tokenize(resourceMap.getString(key));
         JMenu menu = new JMenu(resourceMap.getString(key + "Label"));
-        for (int i = 0; i < itemKeys.length; i++) {
+
+
+        for (int i = 0; i
+                < itemKeys.length; i++) {
             if (itemKeys[i].equals("-")) {
                 menu.addSeparator();
+
+
             } else {
                 JMenuItem mi = createMenuItem(itemKeys[i]);
                 menu.add(mi);
+
+
             }
         }
         return menu;
+
+
     }
 
     protected JMenuItem createMenuItem(String cmd) {
@@ -603,7 +746,11 @@ public class TodoForm extends FrameView {
         JMenuItem mi = new JMenuItem();
         mi.setAction(actionMap.get(cmd));
 
+
+
         return mi;
+
+
 
 
     }
@@ -613,15 +760,29 @@ public class TodoForm extends FrameView {
         StringTokenizer t = new StringTokenizer(input);
         String cmd[];
 
+
+
         while (t.hasMoreTokens()) {
             v.addElement(t.nextToken());
+
+
         }
         cmd = new String[v.size()];
-        for (int i = 0; i < cmd.length; i++) {
+
+
+        for (int i = 0; i
+                < cmd.length; i++) {
             cmd[i] = (String) v.elementAt(i);
+
+
         }
 
         return cmd;
+
+
+
+
+
     }
 
     public class FancyButton extends JButton {
@@ -688,13 +849,18 @@ public class TodoForm extends FrameView {
             taskController.addTask(t);
             txtTaskName.setText("");
             txtDate.setText("");
-            addTaskToTable(t);
+            addTaskToTable(
+                    t);
+
+
 
         } catch (Exception e) {
 
             JFrame mainFrame = TodoApplication.getApplication().getMainFrame();
             JOptionPane.showMessageDialog(mainFrame, "Internal Error :\n Details :" + e.getMessage(),
                     "Error", JOptionPane.WARNING_MESSAGE);
+
+
         }
 
 
@@ -706,8 +872,12 @@ public class TodoForm extends FrameView {
             JFrame mainFrame = TodoApplication.getApplication().getMainFrame();
             tagFrame = new TagFrame(mainFrame, this);
             tagFrame.setLocationRelativeTo(tagFrame);
+
+
         }
         TodoApplication.getApplication().show(tagFrame);
+
+
     }
 
     @Action
@@ -716,18 +886,26 @@ public class TodoForm extends FrameView {
         int index = tagList.getSelectedIndex();
         Tag t = (Tag) model.getElementAt(index);
 
+
+
         if (t.getTagName().equals("All")) // all tag to show all type of task
         {
             return;
+
+
         }
 
         if (!taskController.isTagUsed(t)) {
             taskController.deleteTag(t);
             model.remove(index);
+
+
         } else {
             JFrame mainFrame = TodoApplication.getApplication().getMainFrame();
             JOptionPane.showMessageDialog(mainFrame, "Tag is used",
                     "Error", JOptionPane.WARNING_MESSAGE);
+
+
 
         }
 
@@ -741,6 +919,8 @@ public class TodoForm extends FrameView {
     @Action
     public void open() {
         System.out.println("Task added");
+
+
     }
     /*
      *   this action to show new task window
@@ -752,6 +932,8 @@ public class TodoForm extends FrameView {
         getTaskFrame();
         taskFrame.clearForm();
         TodoApplication.getApplication().show(taskFrame);
+
+
     }
     /*
      * This method  to get new task window
@@ -763,8 +945,12 @@ public class TodoForm extends FrameView {
             JFrame mainFrame = TodoApplication.getApplication().getMainFrame();
             taskFrame = new TaskFrame(mainFrame, this);
             taskFrame.setLocationRelativeTo(mainFrame);
+
+
         }
         return taskFrame;
+
+
     }
     /*
      *  this method for show task frame
@@ -774,26 +960,36 @@ public class TodoForm extends FrameView {
         getTaskFrame();
         TodoApplication.getApplication().show(taskFrame);
 
+
+
     }
 
     @Action
     public void exit() {
         System.exit(0);
+
+
     }
 
     @Action
     public void archiveList() {
         System.out.println("Task added");
+
+
     }
 
     @Action
     public void archive() {
         System.out.println("Task added");
+
+
     }
 
     @Action
     public void trash() {
         System.out.println("Task added");
+
+
     }
 
     @Action
@@ -806,20 +1002,12 @@ public class TodoForm extends FrameView {
     @Action
     public void todaysTask() {
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, 23);
-        cal.set(Calendar.MINUTE, 59);
-        cal.set(Calendar.SECOND, 59);
-        Date today = cal.getTime();
-        //System.out.println("Today : " + today);
+        Date today = Utility.removeTime(new Date());
+        System.out.println("today 1 " + Utility.removeTime(new Date()));
 
-        cal.add(Calendar.DATE, 7);
-        Date sevenDays = cal.getTime();
-        //System.out.println("7 Days from now : " + sevenDays);
+        taskListTable.getSorter().setRowFilter(RowFilter.dateFilter(RowFilter.ComparisonType.EQUAL, today, 1));
 
-        cal.add(Calendar.DATE, 23);
-        Date thirtyDays = cal.getTime();
-        System.out.println("30 Days from now : " + thirtyDays);
-        taskListTable.getSorter().setRowFilter(RowFilter.dateFilter(RowFilter.ComparisonType.BEFORE, today, 1));
+
 
     }
 
@@ -829,6 +1017,8 @@ public class TodoForm extends FrameView {
     @Action
     public void moreTask() {
         taskListTable.getSorter().setRowFilter(null);
+
+
     }
     /*
      *  show all weekly tasks
@@ -836,7 +1026,14 @@ public class TodoForm extends FrameView {
 
     @Action
     public void weeklyTask() {
-        System.out.println("Task weekly");
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, 7);
+        Date sevenDays = cal.getTime();
+
+        taskListTable.getSorter().setRowFilter(RowFilter.dateFilter(RowFilter.ComparisonType.BEFORE, sevenDays, 1));
+
+
+
     }
 
     @Action
@@ -845,12 +1042,101 @@ public class TodoForm extends FrameView {
 
         if (currentTaskCard.equals(tableCardKey)) {
             currentTaskCard = listCardKey;
+
+
         } else {
             currentTaskCard = tableCardKey;
+
+
 
         }
         CardLayout cl = (CardLayout) (taskCardPanel.getLayout());
         cl.show(taskCardPanel, currentTaskCard);
 
+
+    }
+    // theme action
+
+    @Action
+    public void metalTheme() {
+
+        MetalLookAndFeel.setCurrentTheme(new DefaultMetalTheme());
+        changeTheme("javax.swing.plaf.metal.MetalLookAndFeel");
+    }
+    // theme action
+
+    @Action
+    public void motifTheme() {
+        changeTheme("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+    }
+    // theme action
+
+    @Action
+    public void windowsTheme() {
+        changeTheme(UIManager.getSystemLookAndFeelClassName());
+    }
+    // theme action
+
+    @Action
+    public void aquaTheme() {
+        changMetalTheme(new AquaTheme());
+    }
+    // theme action
+
+    @Action
+    public void charcoalTheme() {
+        changMetalTheme(new CharcoalTheme());
+    }
+    // theme action
+
+    @Action
+    public void contrastTheme() {
+        changMetalTheme(new ContrastTheme());
+    }
+    // theme action
+
+    @Action
+    public void emeraldTheme() {
+        changMetalTheme(new EmeraldTheme());
+    }
+    // theme action
+
+    @Action
+    public void rubyTheme() {
+        changMetalTheme(new RubyTheme());
+    }
+
+
+    /*
+     *  change change according to parameter
+     *  @param theme name
+     */
+    public void changeTheme(String theme) {
+        try {
+
+            UIManager.setLookAndFeel(theme);
+            JFrame mainFrame = TodoApplication.getApplication().getMainFrame();
+            SwingUtilities.updateComponentTreeUI(mainFrame);
+
+        } catch (Exception e) {
+        }
+    }
+    /*
+     *  change change MetalTheme  according to parameter
+     *  @param theme name
+     */
+
+    public void changMetalTheme(MetalTheme theme) {
+        try {
+
+            MetalLookAndFeel.setCurrentTheme(theme);
+
+            UIManager.setLookAndFeel(new MetalLookAndFeel());
+
+            JFrame mainFrame = TodoApplication.getApplication().getMainFrame();
+            SwingUtilities.updateComponentTreeUI(mainFrame);
+
+        } catch (Exception e) {
+        }
     }
 }

@@ -62,6 +62,7 @@ public class TaskTable extends JTable {
                 return lable;
             } else if (column == 1) {
                 if (value != null) {
+                    System.out.println("today 2 " +(Date) value);
                     lable.setText(Utility.formatDateShort((Date) value));
                 }
                 return lable;

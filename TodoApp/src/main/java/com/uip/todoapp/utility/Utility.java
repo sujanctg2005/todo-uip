@@ -50,6 +50,17 @@ public class Utility {
         }
         return null;
     }
+    public static Date removeTime(Date date){
+        try {
+
+            DateFormat df = new SimpleDateFormat(dateFormat);
+            return df.parse(formatDateShort(date));
+
+        } catch (Exception ex) {
+          // System.out.println("data is null");
+        }
+        return date;
+    }
 
     public static String formatDateShort(Date date) {
         try {

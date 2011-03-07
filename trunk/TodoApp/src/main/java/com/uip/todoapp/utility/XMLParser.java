@@ -31,7 +31,7 @@ public class XMLParser {
      */
     org.jdom.Document doc;
     static XMLParser parser;
-    String xmlFilePath = "data\\data.xml";
+    String xmlFilePath = "data/data.xml";
 
     private XMLParser() {
 

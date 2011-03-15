@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComponent;
+import javax.swing.JMenu;
 
 
 import javax.swing.JMenuItem;
@@ -89,6 +90,20 @@ public class TaskListTable {
 
     }
 
+
+    /*
+     * add same context menu to main menu
+     * @param menu ,Application main menu 
+     */
+    public void addActionToMenu(JMenu menu) {
+
+        menu.add(makeMenuItem("edit"));
+        menu.add(makeMenuItem("delete"));
+        menu.add(makeMenuItem("complete"));
+
+
+    }
+
     /*
      *  get table default sorter
      *  @return TableRowSorter instance
@@ -130,6 +145,8 @@ public class TaskListTable {
      */
 
     public void loadTask() {
+
+
         List<Task> data = taskController.getAllTask();
 
         for (Task t : data) {
@@ -227,6 +244,25 @@ public class TaskListTable {
 
     @Action
     public void complete() {
-        System.out.println("cc");
+        Task t = new Task();
+
+        // user can edit task from table or list
+        if (mainForm.currentTaskCard.equals(mainForm.tableCardKey)) {
+            int row = taskListTable.getSelectedRow();
+            Integer id = new Integer(taskListTable.getValueAt(row, 5).toString());
+            t = taskListTablemodel.getTaskByID(id);
+
+        } else {
+
+            t = (Task) mainForm.taskJlist.getModel().getElementAt(mainForm.taskJlist.getSelectedIndex());
+
+
+
+        }
+        t.setProgress(100);
+        taskController.editTask(t);
+        mainForm.updateTaskToTable(t);
+
+
     }
 }

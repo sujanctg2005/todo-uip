@@ -4,7 +4,6 @@
  */
 package com.uip.todoapp;
 
-
 import com.uip.todoapp.utility.Utility;
 import java.awt.Color;
 import java.awt.Component;
@@ -16,7 +15,6 @@ import javax.swing.JTable;
 
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
-
 
 /**
  *
@@ -31,7 +29,7 @@ public class TaskTable extends JTable {
 
         super.setModel(model);
 
-          
+
 
     }
 
@@ -58,11 +56,16 @@ public class TaskTable extends JTable {
             }
 
             if (column == 0) {
-                lable.setText(value.toString());
+                Integer progress = (Integer) table.getValueAt(row, 4);
+                String taskName = value.toString();
+                if (progress.intValue() == 100) {
+                    taskName = "<html><strike>" + taskName + "</strike></html>";
+                }
+                lable.setText(taskName );
                 return lable;
             } else if (column == 1) {
                 if (value != null) {
-                    System.out.println("today 2 " +(Date) value);
+                    
                     lable.setText(Utility.formatDateShort((Date) value));
                 }
                 return lable;
@@ -97,14 +100,15 @@ public class TaskTable extends JTable {
 
 
             } else if (column == 4) {
-              Integer progress =0;
-              if(value!=null)
-                  progress = (Integer)value;
+                Integer progress = 0;
+                if (value != null) {
+                    progress = (Integer) value;
+                }
 
                 return createBar(progress, progress.toString());
             } else {
                 lable.setText("");
-                return  lable;
+                return lable;
             }
 
         }

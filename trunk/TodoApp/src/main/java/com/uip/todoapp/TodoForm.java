@@ -713,6 +713,8 @@ public class TodoForm extends FrameView {
         this.menubar = mb;
 
 
+        taskListTable.addActionToMenu(mb.getMenu(1));
+
         return mb;
 
 
@@ -1105,7 +1107,16 @@ public class TodoForm extends FrameView {
     public void rubyTheme() {
         changMetalTheme(new RubyTheme());
     }
+    // help action
 
+    @Action
+    public void help() {
+        JDialog help = new JDialog(this.getFrame());
+        help.setSize(100, 100);
+        help.add(new JLabel("Todo Manager "));
+         TodoApplication.getApplication().show(help);
+        
+    }
 
     /*
      *  change change according to parameter
@@ -1117,6 +1128,8 @@ public class TodoForm extends FrameView {
             UIManager.setLookAndFeel(theme);
             JFrame mainFrame = TodoApplication.getApplication().getMainFrame();
             SwingUtilities.updateComponentTreeUI(mainFrame);
+            SwingUtilities.updateComponentTreeUI(taskFrame);
+
 
         } catch (Exception e) {
         }

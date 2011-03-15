@@ -56,16 +56,40 @@ public class TaskTable extends JTable {
             }
 
             if (column == 0) {
-                Integer progress = (Integer) table.getValueAt(row, 4);
+
                 String taskName = value.toString();
+               
+
+                // if progress is 100% then task label will be shown with strike
+                Integer progress = (Integer) table.getValueAt(row, 4);
                 if (progress.intValue() == 100) {
                     taskName = "<html><strike>" + taskName + "</strike></html>";
                 }
-                lable.setText(taskName );
+
+
+                 // task is over due then task label font color will be changed
+                Date d = (Date) table.getValueAt(row, 1);  // get due date of task
+                if (d != null && progress!=100) {
+                    Date today = new Date();
+                    System.out.println("Today " + today);
+                    System.out.println("due " + d);
+
+                    if (d.before(Utility.removeTime(today))) {
+                        taskName = "<html><p><font color=\"red\">" + taskName + "</font> </p></html>";
+
+                    }
+                     if (d.equals(Utility.removeTime(today))) {
+                        taskName = "<html><p><i>" + taskName + "</i> </p></html>";
+
+                    }
+                }
+
+
+                lable.setText(taskName);
                 return lable;
             } else if (column == 1) {
                 if (value != null) {
-                    
+
                     lable.setText(Utility.formatDateShort((Date) value));
                 }
                 return lable;

@@ -8,7 +8,7 @@
       <dueDate>2010-09-09</dueDate>
       <description>a</description>
       <tag>Class, Nothing</tag>
-      <progress>80</progress>
+      <progress>100</progress>
       <status>0</status>
     </Task>
     <Task>
@@ -18,17 +18,7 @@
       <dueDate>2010-09-09</dueDate>
       <description />
       <tag>All</tag>
-      <progress>10</progress>
-      <status>0</status>
-    </Task>
-    <Task>
-      <id>91</id>
-      <taskName>df</taskName>
-      <priority>Low</priority>
-      <dueDate />
-      <description />
-      <tag />
-      <progress>14</progress>
+      <progress>100</progress>
       <status>0</status>
     </Task>
     <Task>
@@ -38,7 +28,7 @@
       <dueDate>2011-03-05</dueDate>
       <description />
       <tag />
-      <progress>0</progress>
+      <progress>100</progress>
       <status>0</status>
     </Task>
     <Task>
@@ -48,7 +38,7 @@
       <dueDate>2011-03-10</dueDate>
       <description />
       <tag />
-      <progress>10</progress>
+      <progress>68</progress>
       <status>0</status>
     </Task>
   </tasklist>

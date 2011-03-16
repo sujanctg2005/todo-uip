@@ -64,7 +64,7 @@ public class TodoForm extends FrameView {
     private TaskFrame taskFrame;
     private TaskListTable taskListTable;
     JTextField txtTaskName;
-    JTextField txtDate;
+    org.jdesktop.swingx.JXDatePicker  txtDate;
     DefaultListModel model;
     TagList tagObj = TagList.getInstance();
     TagFrame tagFrame;
@@ -396,11 +396,15 @@ public class TodoForm extends FrameView {
         addTaskPanel.add(txtTaskName);
 
         addTaskPanel.add(Box.createHorizontalStrut(10));
-        addTaskPanel.add(new JLabel("Date(yyyy-MM-dd)"));
-        txtDate = new JTextField("", 13);
+        addTaskPanel.add(new JLabel("Date"));
+        txtDate = new org.jdesktop.swingx.JXDatePicker();
+        txtDate.setFormats(new String[]{"yyyy-MM-dd"});
+
         addTaskPanel.add(Box.createHorizontalStrut(10));
         addTaskPanel.add(txtDate);
         addTaskPanel.add(Box.createHorizontalStrut(10));
+
+
 
         JButton addTaskButton = new JButton("Add");
         addTaskButton.setAction(actionMap.get("addTask")); // NOI18N
@@ -839,7 +843,9 @@ public class TodoForm extends FrameView {
             Task t = new Task();
 
             t.setTaskName(txtTaskName.getText());
-            t.setDueDate(Utility.parseDate(txtDate.getText()));
+           // t.setDueDate(Utility.parseDate(txtDate.getText()));
+             t.setDueDate(txtDate.getDate());
+
             t.setId(Utility.getTaskMaxId());
             t.setProgress(0);
             t.setDescription("");
@@ -850,7 +856,7 @@ public class TodoForm extends FrameView {
             System.out.println("toform :" + t.toSting());
             taskController.addTask(t);
             txtTaskName.setText("");
-            txtDate.setText("");
+            txtDate.setDate(new Date());
             addTaskToTable(
                     t);
 
@@ -1114,8 +1120,8 @@ public class TodoForm extends FrameView {
         JDialog help = new JDialog(this.getFrame());
         help.setSize(100, 100);
         help.add(new JLabel("Todo Manager "));
-         TodoApplication.getApplication().show(help);
-        
+        TodoApplication.getApplication().show(help);
+
     }
 
     /*

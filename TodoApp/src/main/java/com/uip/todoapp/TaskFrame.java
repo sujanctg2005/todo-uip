@@ -10,6 +10,7 @@ import com.uip.todoapp.domain.Tag;
 import com.uip.todoapp.domain.Task;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.util.Date;
 import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -39,7 +40,7 @@ public class TaskFrame extends javax.swing.JDialog {
     ResourceMap resourceMap;
     javax.swing.ActionMap actionMap;
     JTextField txtTaskName;
-    JTextField txtDate;
+    org.jdesktop.swingx.JXDatePicker  txtDate;
     static String[] priorityItems = {"Low", "Medium", "High"};
     JComboBox priorityCmb;
     JList tagList;
@@ -90,7 +91,7 @@ public class TaskFrame extends javax.swing.JDialog {
         Task t = new Task();
 
         t.setTaskName(txtTaskName.getText());
-        t.setDueDate(Utility.parseDate(txtDate.getText()));
+        t.setDueDate(txtDate.getDate());
 
         t.setProgress(progressSlider.getValue());
         t.setDescription(txtDec.getText());
@@ -128,7 +129,7 @@ public class TaskFrame extends javax.swing.JDialog {
            
             selTask = t;
             txtTaskName.setText(t.getTaskName());
-            txtDate.setText(Utility.formatDateShort(t.getDueDate()));
+            txtDate.setDate(t.getDueDate());
             System.out.println(t.getProgress());
             if (progressSlider != null && t != null) {
                 try {
@@ -175,7 +176,7 @@ public class TaskFrame extends javax.swing.JDialog {
 
     public void clearForm() {
         selTask = null;
-        txtDate.setText("");
+        txtDate.setDate(new Date());
         txtDec.setText("");
         txtTaskName.setText("");
         progressSlider.setValue(0);
@@ -254,7 +255,8 @@ public class TaskFrame extends javax.swing.JDialog {
 
         JPanel p4 = new JPanel();
         p4.setLayout(new BoxLayout(p4, BoxLayout.Y_AXIS));
-        txtDate = new JTextField("", 8);
+        txtDate = new org.jdesktop.swingx.JXDatePicker();
+        txtDate.setFormats(new String[]{"yyyy-MM-dd"});
         p4.add(new JLabel("Date(yyyy-MM-dd)"));
         p4.add(txtDate);
 
